@@ -84,12 +84,14 @@ function addEmployee()
         {
           type: "input",
           message: "Employee's first name: ",
-          name: "firstName"
+          name: "firstName",
+          validate: validateStrings
         },
         {
           type: "input",
           message: "Employee's last name: ",
-          name: "lastName"
+          name: "lastName",
+          validate: validateStrings
         },
         {
           type: "list",
@@ -113,7 +115,6 @@ function addEmployee()
           console.log("Success! Employee added");
         }
       });
-      // INSERT INTO employee (first_name, last_name, role_id) VALUES ("John", "Doe", 1);
     });
 }
 function addRole()
@@ -131,11 +132,24 @@ function addDepartment()
 {
   // console.log("department");
 
-  // inquirer
-  //   .prompt({
-  //   })
-  //   .then(function(answer) {
+  inquirer
+    .prompt({
+        type: "input",
+        message: "Name of department: ",
+        name: "name",
+        validate: validateStrings
+    })
+    .then(function(answer) {
+        connection.query("INSERT INTO department (name) VALUES (?)", [answer.name], function (err, result, fields){
+            if(err) throw err;
+            else{
+                console.log("Success! Department added");
+            }
+        });
+    });
+}
 
-    // INSERT INTO department (name) VALUES ("Sales");
-  //   });
+function validateStrings(input){
+  var regex = /^[a-zA-Z ]{2,30}$/;
+  return regex.test(input);
 }
