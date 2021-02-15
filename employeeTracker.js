@@ -77,7 +77,7 @@ function addEmployee()
       roleTitles.push(role.title);
     });
   });
-  console.log(roles);
+  // console.log(roles);
   inquirer
     .prompt(
       [
@@ -120,17 +120,56 @@ function addEmployee()
 function addRole()
 {
   // console.log("role");
-
-  // inquirer
-  //   .prompt({
-  //   })
-  //   .then(function(answer) {
+  var departments = [];
+  var departmentTitles = [];
+  connection.query("SELECT * FROM department", function(err, result, fields){
+    if(err) throw err;
+    departments = result;
+    result.forEach(department => {
+      departmentTitles.push(department.name);
+    });
+  });
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "Title of role: ",
+        name: "title",
+        validate: validateStrings
+      },
+      {
+        type: "input",
+        message: "Roles salary: ",
+        name: "salary",
+        validate: validateNum
+      },
+      {
+        type: "list",
+        message: "Department for role: ",
+        name: "department",
+        choices: departmentTitles
+      }   
+    ])
+    .then(function(answer) {
+        var departmentId = 0;
+        departments.forEach(department => {
+            if(answer.department == department.name)
+            {
+              departmentId = department.id;
+            }
+        });
+        console.log(departmentId);
+        connection.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", [answer.title, answer.salary, departmentId], function(err, result, fields){
+          if(err) throw err;
+          else{
+            console.log("Success! Department added");
+          }
+        });
     // INSERT INTO role (title, salary, department_id) VALUES ("Salesperson", 56000, 1);
-  //   });
+    });
 }
 function addDepartment()
 {
-  // console.log("department");
 
   inquirer
     .prompt({
@@ -152,4 +191,8 @@ function addDepartment()
 function validateStrings(input){
   var regex = /^[a-zA-Z ]{2,30}$/;
   return regex.test(input);
+}
+
+function validateNum(input){
+  return !isNaN(input); //because isNaN returns false if the input is a number we want to return the opposite value so that inquirer receives the proper response for validation
 }
