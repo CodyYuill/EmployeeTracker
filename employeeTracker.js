@@ -1,13 +1,14 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var table = require("console.table")
 
 var choices = [
 "Add employee", 
 "Add role", 
 "Add department", 
-"View employee", 
-"View role", 
-"View department", 
+"View employees", 
+"View roles", 
+"View departments", 
 "Update employee roles"
 ];
 
@@ -50,7 +51,7 @@ function runSearch() {
         addDepartment();
         break;
       case choices[3]/*view employee*/:
-
+        viewEmployees();
         break;
       case choices[4]/*view role*/:
 
@@ -179,13 +180,27 @@ function addDepartment()
         validate: validateStrings
     })
     .then(function(answer) {
-        connection.query("INSERT INTO department (name) VALUES (?)", [answer.name], function (err, result, fields){
+        connection.query("INSERT INTO department (department) VALUES (?)", [answer.name], function (err, result, fields){
             if(err) throw err;
             else{
                 console.log("Success! Department added");
             }
         });
     });
+}
+
+function viewEmployees(){
+    connection.query('SELECT employee.id, first_name, last_name, manager_id, title, salary, department FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id;', function(err, result, fields){
+        console.table(result);
+    });
+}
+
+function viewRoles(){
+
+}
+
+function viewDepartments(){
+
 }
 
 function validateStrings(input){
