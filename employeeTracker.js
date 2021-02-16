@@ -54,10 +54,10 @@ function runSearch() {
         viewEmployees();
         break;
       case choices[4]/*view role*/:
-
+        viewRoles();
         break;
       case choices[5]/*view department*/:
-
+        viewDepartments();
         break;
       case choices[6]/*update employee role*/:
 
@@ -196,11 +196,15 @@ function viewEmployees(){
 }
 
 function viewRoles(){
-
+    connection.query('SELECT role.id, title, salary, department FROM role INNER JOIN department ON role.department_id = department.id;', function(err, result, fields){
+      console.table(result);
+    });
 }
 
 function viewDepartments(){
-
+    connection.query("SELECT * FROM department", function(err, result, fields){
+      console.table(result);
+    });
 }
 
 function validateStrings(input){
