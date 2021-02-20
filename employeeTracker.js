@@ -13,6 +13,7 @@ var choices = [
 "Exit"
 ];
 
+
 var connection = mysql.createConnection({
   host: "localhost",
 
@@ -132,8 +133,9 @@ function addRole()
     if(err) throw err;
     departments = result;
     result.forEach(department => {
-      departmentTitles.push(department.name);
+      departmentTitles.push(department.department);
     });
+    console.log(departmentTitles);
   });
   inquirer
     .prompt([
@@ -152,8 +154,8 @@ function addRole()
       {
         type: "list",
         message: "Department for role: ",
-        name: "department",
-        choices: departmentTitles
+        choices: departmentTitles,
+        name: "department"
       }   
     ])
     .then(function(answer) {
@@ -282,7 +284,6 @@ function updateEmployeeRole(){
 
 
   });
-
 
 
 }
