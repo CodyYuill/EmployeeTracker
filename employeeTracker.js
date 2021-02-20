@@ -135,7 +135,7 @@ function addRole()
     result.forEach(department => {
       departmentTitles.push(department.department);
     });
-    console.log(departmentTitles);
+
   });
   inquirer
     .prompt([
@@ -161,12 +161,12 @@ function addRole()
     .then(function(answer) {
         var departmentId = 0;
         departments.forEach(department => {
-            if(answer.department == department.name)
+            if(answer.department == department.department)
             {
               departmentId = department.id;
             }
         });
-        console.log(departmentId);
+        // console.log(departmentId);
         connection.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", [answer.title, answer.salary, departmentId], function(err, result, fields){
           if(err) throw err;
           else{
